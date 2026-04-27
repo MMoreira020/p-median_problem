@@ -1,16 +1,3 @@
-"""
-Geração de Gráficos — Heurística Greedy Addition para o P-Median
-=================================================================
-Disciplina: SIN-492 - Inteligência Computacional
-Universidade Federal de Viçosa - Campus Rio Paranaíba
-
-Execute este script APÓS rodar p_median_greedy.py.
-Os gráficos serão salvos na pasta 'graficos/' como arquivos PNG.
-
-Aluno(a): <seu nome>
-Matrícula: <sua matrícula>
-"""
-
 import os
 import math
 import time
@@ -18,12 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import numpy as np
 
-# =============================================================================
-# DADOS DOS RESULTADOS (copiados da saída do p_median_greedy.py)
-# =============================================================================
-
 resultados = [
-    # (inst, n, p, otimo, heuristica, gap, tempo)
     (1,  100,   5,  5819.0,  5814.0, -0.09,  0.004),
     (2,  100,  10,  4093.0,  4315.0,  5.42,  0.008),
     (3,  100,  10,  4250.0,  4572.0,  7.58,  0.008),
@@ -66,7 +48,6 @@ resultados = [
     (40, 900,  90,  5128.0,  5122.0, -0.12, 16.088),
 ]
 
-# Extrai colunas individuais
 instancias = [r[0] for r in resultados]
 ns         = [r[1] for r in resultados]
 ps         = [r[2] for r in resultados]
@@ -75,9 +56,6 @@ heuristicas= [r[4] for r in resultados]
 gaps       = [r[5] for r in resultados]
 tempos     = [r[6] for r in resultados]
 
-# =============================================================================
-# CONFIGURAÇÕES GERAIS DE ESTILO
-# =============================================================================
 
 plt.rcParams.update({
     'font.family':     'DejaVu Sans',
@@ -92,17 +70,13 @@ plt.rcParams.update({
     'figure.dpi':      150,
 })
 
-COR_HEUR  = '#2196F3'   # azul  — heurística
-COR_OT    = '#4CAF50'   # verde — ótimo
-COR_POS   = '#F44336'   # vermelho — gap positivo (acima do ótimo)
-COR_NEG   = '#4CAF50'   # verde    — gap negativo (abaixo do ótimo)
-COR_TEMPO = '#9C27B0'   # roxo  — tempo
+COR_HEUR  = '#2196F3'   
+COR_OT    = '#4CAF50'   
+COR_POS   = '#F44336'   
+COR_NEG   = '#4CAF50'   
+COR_TEMPO = '#9C27B0'   
 
 os.makedirs('graficos', exist_ok=True)
-
-# =============================================================================
-# GRÁFICO 1 — Gap (%) por Instância
-# =============================================================================
 
 fig, ax = plt.subplots(figsize=(14, 5))
 
@@ -132,10 +106,6 @@ plt.savefig('graficos/01_gap_por_instancia.png')
 plt.close()
 print("Gráfico 1 salvo: graficos/01_gap_por_instancia.png")
 
-# =============================================================================
-# GRÁFICO 2 — Valor da Heurística vs Ótimo por Instância
-# =============================================================================
-
 fig, ax = plt.subplots(figsize=(14, 5))
 
 ax.plot(instancias, otimos,     color=COR_OT,   marker='o', markersize=4,
@@ -158,10 +128,6 @@ plt.savefig('graficos/02_heuristica_vs_otimo.png')
 plt.close()
 print("Gráfico 2 salvo: graficos/02_heuristica_vs_otimo.png")
 
-# =============================================================================
-# GRÁFICO 3 — Tempo de Execução por Instância
-# =============================================================================
-
 fig, ax = plt.subplots(figsize=(14, 5))
 
 ax.bar(instancias, tempos, color=COR_TEMPO, edgecolor='white',
@@ -178,10 +144,6 @@ plt.savefig('graficos/03_tempo_por_instancia.png')
 plt.close()
 print("Gráfico 3 salvo: graficos/03_tempo_por_instancia.png")
 
-# =============================================================================
-# GRÁFICO 4 — Tempo de Execução vs Tamanho n (escala log)
-# =============================================================================
-
 fig, ax = plt.subplots(figsize=(8, 5))
 
 scatter = ax.scatter(ns, tempos, c=ps, cmap='plasma', s=60,
@@ -190,7 +152,6 @@ scatter = ax.scatter(ns, tempos, c=ps, cmap='plasma', s=60,
 cbar = plt.colorbar(scatter, ax=ax)
 cbar.set_label('Valor de p', fontsize=10)
 
-# Linha de tendência (regressão polinomial grau 2 em log-log)
 ns_arr = np.array(ns, dtype=float)
 ts_arr = np.array(tempos, dtype=float)
 log_n  = np.log(ns_arr)
@@ -211,9 +172,6 @@ plt.savefig('graficos/04_tempo_vs_n.png')
 plt.close()
 print("Gráfico 4 salvo: graficos/04_tempo_vs_n.png")
 
-# =============================================================================
-# GRÁFICO 5 — Gap (%) vs Razão p/n
-# =============================================================================
 
 fig, ax = plt.subplots(figsize=(8, 5))
 
@@ -226,7 +184,6 @@ ax.axhline(0, color='black', linewidth=0.8, linestyle='-', zorder=2)
 ax.axhline(sum(gaps)/len(gaps), color='#FF9800', linewidth=1.5,
            linestyle='--', zorder=2, label=f'Gap médio: {sum(gaps)/len(gaps):.2f}%')
 
-# Anotações das instâncias com gap extremo
 for i, (r, g, inst) in enumerate(zip(razoes, gaps, instancias)):
     if abs(g) > 5:
         ax.annotate(f'pmed{inst}', (r, g),
@@ -249,17 +206,12 @@ plt.savefig('graficos/05_gap_vs_razao_pn.png')
 plt.close()
 print("Gráfico 5 salvo: graficos/05_gap_vs_razao_pn.png")
 
-# =============================================================================
-# GRÁFICO 6 — Distribuição dos Gaps (histograma)
-# =============================================================================
-
 fig, ax = plt.subplots(figsize=(8, 5))
 
 n_bins = 12
 counts, bins, patches = ax.hist(gaps, bins=n_bins, edgecolor='white',
                                  linewidth=0.8, zorder=3)
 
-# Colorir barras: verde se <= 0, vermelho se > 0
 for patch, left in zip(patches, bins[:-1]):
     patch.set_facecolor(COR_NEG if left <= 0 else COR_POS)
     patch.set_alpha(0.85)
@@ -289,10 +241,6 @@ plt.savefig('graficos/06_distribuicao_gaps.png')
 plt.close()
 print("Gráfico 6 salvo: graficos/06_distribuicao_gaps.png")
 
-# =============================================================================
-# GRÁFICO 7 — Gap médio por grupo de instâncias (agrupado por n)
-# =============================================================================
-
 fig, ax = plt.subplots(figsize=(8, 5))
 
 grupos = {}
@@ -316,7 +264,6 @@ ax.axhline(sum(gaps)/len(gaps), color='#FF9800', linewidth=1.5,
            linestyle='--', zorder=4,
            label=f'Gap médio geral: {sum(gaps)/len(gaps):.2f}%')
 
-# Rótulo do valor em cada barra
 for bar, m in zip(bars, medias):
     ax.text(bar.get_x() + bar.get_width()/2,
             m + (0.15 if m >= 0 else -0.35),
@@ -331,10 +278,6 @@ plt.tight_layout()
 plt.savefig('graficos/07_gap_medio_por_grupo.png')
 plt.close()
 print("Gráfico 7 salvo: graficos/07_gap_medio_por_grupo.png")
-
-# =============================================================================
-# GRÁFICO 8 — Tempo médio por grupo de instâncias
-# =============================================================================
 
 fig, ax = plt.subplots(figsize=(8, 5))
 
@@ -363,10 +306,6 @@ plt.tight_layout()
 plt.savefig('graficos/08_tempo_medio_por_grupo.png')
 plt.close()
 print("Gráfico 8 salvo: graficos/08_tempo_medio_por_grupo.png")
-
-# =============================================================================
-# RESUMO FINAL
-# =============================================================================
 
 print()
 print("=" * 55)
